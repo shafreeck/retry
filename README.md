@@ -1,4 +1,7 @@
 Retry 是一个通用重试框架，可以适配所有需要重试操作的场合
+## 设计文档
+
+http://cf.meitu.com/confluence/pages/viewpage.action?pageId=43887962
 
 ## 功能
 * 支持重试取消
