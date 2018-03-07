@@ -2,12 +2,7 @@ package retry
 
 import (
 	"context"
-	"errors"
 	"time"
-)
-
-var (
-	ErrExceed = errors.New("exceed the max retry limit")
 )
 
 // Retriable is an error type which can be retried
