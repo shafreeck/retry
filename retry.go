@@ -18,6 +18,8 @@ type retry struct {
 	base    time.Duration
 }
 
+var r = New()
+
 // Ensure keeps retring until ctx is done
 func (r *retry) Ensure(ctx context.Context, do func() error) error {
 	duration := r.base
@@ -78,4 +80,9 @@ func Exponential(factor float64) BackoffStrategy {
 	return func(last time.Duration) time.Duration {
 		return time.Duration(float64(last) * factor)
 	}
+}
+
+// Ensure keeps retring until ctx is done, it use a default retry object
+func Ensure(ctx context.Context, do func() error) error {
+	return r.Ensure(ctx, do)
 }
