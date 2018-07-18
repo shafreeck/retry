@@ -9,11 +9,7 @@ import (
 type Retriable error
 
 // Retry ensures that the do function will be executed until some condition being satisfied
-type Retry interface {
-	Ensure(ctx context.Context, do func() error) error
-}
-
-type retry struct {
+type Retry struct {
 	backoff BackoffStrategy
 	base    time.Duration
 }
@@ -21,7 +17,7 @@ type retry struct {
 var r = New()
 
 // Ensure keeps retring until ctx is done
-func (r *retry) Ensure(ctx context.Context, do func() error) error {
+func (r *Retry) Ensure(ctx context.Context, do func() error) error {
 	duration := r.base
 	for {
 		select {
@@ -47,28 +43,28 @@ func (r *retry) Ensure(ctx context.Context, do func() error) error {
 }
 
 // Option is an option to new a Retry object
-type Option func(r *retry)
+type Option func(r *Retry)
 
 // BackoffStrategy defines the backoff strategy of retry
 type BackoffStrategy func(last time.Duration) time.Duration
 
 // WithBackoff replace the default backoff function
 func WithBackoff(backoff BackoffStrategy) Option {
-	return func(r *retry) {
+	return func(r *Retry) {
 		r.backoff = backoff
 	}
 }
 
 // WithBase set the first delay duration, default 10ms
 func WithBaseDelay(base time.Duration) Option {
-	return func(r *retry) {
+	return func(r *Retry) {
 		r.base = base
 	}
 }
 
 // New a retry object
-func New(opts ...Option) Retry {
-	r := &retry{base: 10 * time.Millisecond, backoff: Exponential(2)}
+func New(opts ...Option) *Retry {
+	r := &Retry{base: 10 * time.Millisecond, backoff: Exponential(2)}
 	for _, opt := range opts {
 		opt(r)
 	}
