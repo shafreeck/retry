@@ -2,7 +2,7 @@ Retry is a pretty simple library to ensure your work to be done
 
 ## Features
 * Retry to run a workflow(Ex. rpc or db access)
-* Customize backoff stratagy
+* Customize backoff strategy
 * Retry accoding to your type of error
 
 ## Examples
