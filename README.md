@@ -1,12 +1,9 @@
-Retry 是一个通用重试框架，可以适配所有需要重试操作的场合
-## 设计文档
+Retry is a pretty simple library to ensure your work to be done
 
-http://cf.meitu.com/confluence/pages/viewpage.action?pageId=43887962
-
-## 功能
-* 支持重试取消
-* 支持自定义重试策略
-* 支持非幂等函数在提交数据前出错重试
+## Features
+* Retry to run a workflow(Ex. rpc or db access)
+* Customize backoff stratagy
+* Retry accoding to your type of error
 
 ## Examples
 
