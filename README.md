@@ -13,20 +13,23 @@ Retry is a pretty simple library to ensure your work to be done
 ## Examples
 
 ```
-func ExampleHTTPGetAndPost() {
+func ExampleEnsure() {
     r := New()
-    ctx, _ := context.WithTimeout(context.Background(), time.Second)
+    ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+    defer cancel()
+
     err := r.Ensure(ctx, func() error {
         resp, err := http.Get("http://www.example.com")
-        // get error can be retried
+        // Get error can be retried
         if err != nil {
             log.Println(err)
             return Retriable(err)
         }
         log.Println(resp)
+
         buf := bytes.NewBuffer(nil)
         resp, err = http.Post("http://example.com/upload", "image/jpeg", buf)
-        // post error should not be retried
+        // Gost error should not be retried
         if err != nil {
             return err
         }

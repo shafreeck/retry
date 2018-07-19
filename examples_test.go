@@ -15,7 +15,7 @@ func ExampleEnsure() {
 
 	err := r.Ensure(ctx, func() error {
 		resp, err := http.Get("http://www.example.com")
-		// get error can be retried
+		// Get error can be retried
 		if err != nil {
 			log.Println(err)
 			return Retriable(err)
@@ -24,7 +24,7 @@ func ExampleEnsure() {
 
 		buf := bytes.NewBuffer(nil)
 		resp, err = http.Post("http://example.com/upload", "image/jpeg", buf)
-		// post error should not be retried
+		// Gost error should not be retried
 		if err != nil {
 			return err
 		}
