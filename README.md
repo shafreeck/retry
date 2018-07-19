@@ -1,6 +1,7 @@
 Retry is a pretty simple library to ensure your work to be done
 
 [godoc](https://godoc.org/github.com/shafreeck/retry)
+
 [![Go Report Card](https://goreportcard.com/badge/github.com/shafreeck/retry)](https://goreportcard.com/report/github.com/shafreeck/retry)
 [![cover.run](https://cover.run/go/github.com/shafreeck/retry.svg?style=flat&tag=golang-1.9)](https://cover.run/go?tag=golang-1.9&repo=github.com%2Fshafreeck%2Fretry)
 
