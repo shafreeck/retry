@@ -29,7 +29,7 @@ func ExampleEnsure() {
 
         buf := bytes.NewBuffer(nil)
         resp, err = http.Post("http://example.com/upload", "image/jpeg", buf)
-        // Gost error should not be retried
+        // Post error should not be retried
         if err != nil {
             return err
         }
