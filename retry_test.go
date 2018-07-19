@@ -40,7 +40,8 @@ func TestEnsure(t *testing.T) {
 		return Retriable(errors.New("please retry"))
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer cancel()
 	if err := r.Ensure(ctx, do); err != nil {
 		t.Fatal(err)
 	}
