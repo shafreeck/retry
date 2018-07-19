@@ -1,5 +1,7 @@
 Retry is a pretty simple library to ensure your work to be done
 
+[godoc](https://godoc.org/github.com/shafreeck/retry)
+
 ## Features
 * Retry to run a workflow(Ex. rpc or db access)
 * Customize backoff strategy
