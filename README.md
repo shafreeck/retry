@@ -12,7 +12,7 @@ Retry is a pretty simple library to ensure your work to be done
 
 ## Examples
 
-```
+```go
 func ExampleEnsure() {
     r := New()
     ctx, cancel := context.WithTimeout(context.Background(), time.Second)
