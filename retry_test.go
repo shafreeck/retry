@@ -51,7 +51,7 @@ func TestEnsure(t *testing.T) {
 }
 
 func TestWithBaseDelay(t *testing.T) {
-	r := &retry{}
+	r := &Retry{}
 	opt := WithBaseDelay(1)
 	opt(r)
 
@@ -60,7 +60,7 @@ func TestWithBaseDelay(t *testing.T) {
 	}
 }
 func TestWithBackoff(t *testing.T) {
-	r := &retry{}
+	r := &Retry{}
 	opt := WithBackoff(nil)
 	opt(r)
 	if r.backoff != nil {
