@@ -55,7 +55,7 @@ func WithBackoff(backoff BackoffStrategy) Option {
 	}
 }
 
-// WithBase set the first delay duration, default 10ms
+// WithBaseDelay set the first delay duration, default 10ms
 func WithBaseDelay(base time.Duration) Option {
 	return func(r *Retry) {
 		r.base = base
