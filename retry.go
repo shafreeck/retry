@@ -78,6 +78,13 @@ func Exponential(factor float64) BackoffStrategy {
 	}
 }
 
+// Tick keeps a constant backoff interval
+func Tick(tick time.Duration) BackoffStrategy {
+	return func(last time.Duration) time.Duration {
+		return tick
+	}
+}
+
 // Ensure keeps retring until ctx is done, it use a default retry object
 func Ensure(ctx context.Context, do func() error) error {
 	return r.Ensure(ctx, do)
