@@ -5,8 +5,15 @@ import (
 	"time"
 )
 
-// Retriable is an error type which can be retried
-type Retriable error
+// RetriableErr is an error type which can be retried
+type RetriableErr struct {
+	error
+}
+
+// Retriable makes an error be retriable
+func Retriable(err error) *RetriableErr {
+	return &RetriableErr{err}
+}
 
 // Retry ensures that the do function will be executed until some condition being satisfied
 type Retry struct {
@@ -27,7 +34,7 @@ func (r *Retry) Ensure(ctx context.Context, do func() error) error {
 		}
 
 		if err := do(); err != nil {
-			if _, ok := err.(Retriable); ok {
+			if _, ok := err.(*RetriableErr); ok {
 				if r.backoff != nil {
 					duration = r.backoff(duration)
 
