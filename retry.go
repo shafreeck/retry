@@ -3,6 +3,7 @@ package retry
 import (
 	"context"
 	"time"
+	"errors"
 )
 
 // RetriableErr is an error type which can be retried
@@ -47,6 +48,25 @@ func (r *Retry) Ensure(ctx context.Context, do func() error) error {
 
 		return nil
 	}
+}
+
+// EnsureN retries N times before do is success
+func (r *Retry) EnsureN(N int, do func() error) error{
+	duration := r.base
+	for i:=0; i <N; i++{
+		if err := do(); err != nil {
+			if _, ok := err.(*Retriable); ok{
+				if r.backoff != nil{
+					duration = r.backoff(duration)
+					time.Sleep(duration)
+				}
+				continue
+			}
+			return err
+		}
+		return nil
+	}
+	return errors.New("retry limit exceed")
 }
 
 // Option is an option to new a Retry object
@@ -95,4 +115,9 @@ func Tick(tick time.Duration) BackoffStrategy {
 // Ensure keeps retring until ctx is done, it use a default retry object
 func Ensure(ctx context.Context, do func() error) error {
 	return r.Ensure(ctx, do)
+}
+
+// EnsureN retries N times before do is success, it uses a default retry object
+func EnsureN(N int, do func() error) error {
+	return r.Ensure(N, do)
 }
