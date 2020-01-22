@@ -2,8 +2,8 @@ package retry
 
 import (
 	"context"
-	"time"
 	"errors"
+	"time"
 )
 
 // RetriableErr is an error type which can be retried
@@ -51,12 +51,37 @@ func (r *Retry) Ensure(ctx context.Context, do func() error) error {
 }
 
 // EnsureN retries N times before do is success
-func (r *Retry) EnsureN(N int, do func() error) error{
+func (r *Retry) EnsureN(N int, do func() error) error {
 	duration := r.base
-	for i:=0; i <N; i++{
+	for i := 0; i < N; i++ {
 		if err := do(); err != nil {
-			if _, ok := err.(*RetriableErr); ok{
-				if r.backoff != nil{
+			if _, ok := err.(*RetriableErr); ok {
+				if r.backoff != nil {
+					duration = r.backoff(duration)
+					time.Sleep(duration)
+				}
+				continue
+			}
+			return err
+		}
+		return nil
+	}
+	return errors.New("retry limit exceed")
+}
+
+// EnsureNWithContext retries N times or until ctx is done before do is success
+func (r *Retry) EnsureNWithContext(ctx context.Context, N int, do func() error) error {
+	duration := r.base
+	for i := 0; i < N; i++ {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
+		}
+
+		if err := do(); err != nil {
+			if _, ok := err.(*RetriableErr); ok {
+				if r.backoff != nil {
 					duration = r.backoff(duration)
 					time.Sleep(duration)
 				}

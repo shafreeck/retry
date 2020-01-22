@@ -74,3 +74,39 @@ func TestWithBackoff(t *testing.T) {
 		t.Fatal(r.backoff)
 	}
 }
+
+func TestEnsureNWithContext(t *testing.T) {
+	r = New(WithBaseDelay(1 * time.Millisecond))
+
+	val := 0
+	do := func() error {
+		val++
+		t.Log(val)
+		if val == 5 {
+			return nil
+		}
+		return Retriable(errors.New("please retry"))
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	err := r.EnsureNWithContext(ctx, 3, do)
+	cancel()
+
+	if err == nil {
+		t.Fatal("should be error")
+	}
+	if val != 3 {
+		t.Fatal(val)
+	}
+
+	ctx, cancel = context.WithTimeout(context.Background(), 1*time.Millisecond)
+	err = r.EnsureNWithContext(ctx, 5, do)
+	cancel()
+
+	if err == nil || err != context.DeadlineExceeded {
+		t.Fatal("should be error")
+	}
+	if val == 5 {
+		t.Fatal(val)
+	}
+}
