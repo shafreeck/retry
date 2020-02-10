@@ -75,7 +75,7 @@ func TestWithBackoff(t *testing.T) {
 	}
 }
 
-func TestEnsureNWithContext(t *testing.T) {
+func TestEnsureN(t *testing.T) {
 	r = New(WithBaseDelay(1 * time.Millisecond))
 
 	val := 0
@@ -88,10 +88,7 @@ func TestEnsureNWithContext(t *testing.T) {
 		return Retriable(errors.New("please retry"))
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
-	err := r.EnsureNWithContext(ctx, 3, do)
-	cancel()
-
+	err := r.EnsureN(context.Background(), 3, do)
 	if err == nil {
 		t.Fatal("should be error")
 	}
@@ -99,10 +96,10 @@ func TestEnsureNWithContext(t *testing.T) {
 		t.Fatal(val)
 	}
 
-	ctx, cancel = context.WithTimeout(context.Background(), 1*time.Millisecond)
-	err = r.EnsureNWithContext(ctx, 5, do)
-	cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Millisecond)
+	defer cancel()
 
+	err = r.EnsureN(ctx, 5, do)
 	if err == nil || err != context.DeadlineExceeded {
 		t.Fatal("should be error")
 	}
