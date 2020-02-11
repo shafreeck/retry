@@ -52,27 +52,14 @@ func (r *Retry) Ensure(ctx context.Context, do func() error) error {
 
 // EnsureN retries N times or until ctx is done before do is success
 func (r *Retry) EnsureN(ctx context.Context, N int, do func() error) error {
-	duration := r.base
-	for i := 0; i < N; i++ {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		default:
+	count := 0
+	return r.Ensure(ctx, func() error {
+		if count >= N {
+			return errors.New("retry limit exceed")
 		}
-
-		if err := do(); err != nil {
-			if _, ok := err.(*RetriableErr); ok {
-				if r.backoff != nil {
-					duration = r.backoff(duration)
-					time.Sleep(duration)
-				}
-				continue
-			}
-			return err
-		}
-		return nil
-	}
-	return errors.New("retry limit exceed")
+		count++
+		return do()
+	})
 }
 
 // Option is an option to new a Retry object
